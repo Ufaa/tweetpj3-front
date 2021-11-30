@@ -27,8 +27,10 @@
               <div class="form-group">
 
                 <div class="tweet">
-                  <input type="text" name="content" class="form-control" placeholder="" style="width:300px; height:200px; border-radius:10px; border:1px; background-color:none; margin-bottom:5px;">
+                  <label for="tweet">お名前：</label>
+                  <input type="text" name="content" id="content" v-model="newTweet" style="width:300px; height:200px; border-radius:10px; border:1px; background-color:none; margin-bottom:5px;">
                 </div>
+
                 <button type="submit" class="btn btn-primary">シェアする</button>
               </div>
             </form>
@@ -55,6 +57,45 @@ export default {
         console.log(error);
       }
     }
+  },
+
+  data() {
+    return {
+      newTweet: "",
+    };
+  },
+  methods: {
+    async getContact() {
+      const resData = await this.$axios.get(
+        "http://127.0.0.1:8000/api/tweet/"
+      );
+      this.contactLists = resData.data.data;
+    },
+    async insertContact() {
+      const sendData = {
+        name: this.newTweet,
+      };
+      await this.$axios.post("http://127.0.0.1:8000/api/tweet/", sendData);
+      this.getContact();
+    },
+    // async updateContact(id, name, email) {
+    //   const sendData = {
+    //     name: name,
+    //     email: email,
+    //   };
+    //   await this.$axios.put(
+    //     "http://127.0.0.1:8000/api/contact/" + id,
+    //     sendData
+    //   );
+    //   this.getContact();
+    // },
+    // async deleteContact(id) {
+    //   await this.$axios.delete("http://127.0.0.1:8000/api/contact/" + id);
+    //   this.getContact();
+    // },
+  },
+  created() {
+    this.getContact();
   },
 };
 </script>
